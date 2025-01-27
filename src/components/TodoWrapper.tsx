@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TodoForm } from './TodoForm'
+import { TodoForm } from '../components/TodoForm'
 import { Todo } from './Todo'
 import { EditTodoForm } from './EditTodoForm'
 
@@ -9,22 +9,22 @@ interface TodoRequest {
  } 
 
 interface Todo { 
-	id: number;
-	title: string;
-	created: string; // ISO date string 
-	isDone: boolean; 
+	id?: number;
+	title?: string;
+	created?: string; // ISO date string 
+	isDone?: boolean; 
 }
 
 interface TodoInfo { 
-	all: number
-	completed: number
-	inWork: number
+	all?: number
+	completed?: number
+	inWork?: number
 }
 
 interface MetaResponse<T, N> {
-	data: T[]
+	data?: T[]
 	info?: N
-	meta: {
+	meta?: {
 		totalAmount: number
 	}
 }
@@ -153,7 +153,7 @@ export const TodoWrapper: React.FC = () => {
           }
 
         fetchData()
-    }, [])
+    }, [todoInfo])
 
     const filteredTodos = todos.filter((todo) => {
         if (filter === 'all') return true
