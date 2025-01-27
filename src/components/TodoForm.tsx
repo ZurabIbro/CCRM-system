@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react'
 
-export const TodoForm = ({addTodo}) => {
-  const [value, setValue] = useState("")
-  const [error, setError] = useState("")
-  const [todos, setTodos] = useState([])
+interface Todo { 
+	id?: number;
+	title?: string;
+	created?: string; // ISO date string 
+	isDone?: boolean; 
+}
+
+interface TodoFormProps {
+  addTodo: (title: string) => void;
+}
+
+export const TodoForm: React.FC<TodoFormProps> = ({addTodo}) => {
+  const [value, setValue] = useState<string>("")
+  const [error, setError] = useState<string>("")
+  const [todos, setTodos] = useState<Todo[]>([])
 
   const handleSubmit = (e) => {
     e.preventDefault()

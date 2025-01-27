@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TodoForm } from '../components/TodoForm'
+import { TodoForm } from './TodoForm'
 import { Todo } from './Todo'
 import { EditTodoForm } from './EditTodoForm'
 
@@ -153,7 +153,7 @@ export const TodoWrapper: React.FC = () => {
           }
 
         fetchData()
-    }, [todoInfo])
+    }, [])
 
     const filteredTodos = todos.filter((todo) => {
         if (filter === 'all') return true

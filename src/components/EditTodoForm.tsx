@@ -1,8 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-export const EditTodoForm = ({editTodo, task, cancelEdit}) => {
-  const [value, setValue] = useState(task.title)
-  const [error, setError] = useState("")
+interface Todo { 
+  id: number;
+  title: string;
+  created: string; // ISO date string 
+  isDone: boolean; 
+}
+
+interface TodoProps {
+  task: Todo;
+  cancelEdit: () => void;
+  editTodo: (id: number, title: string) => void;
+}
+
+export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) => {
+  const [value, setValue] = useState<string>(task.title)
+  const [error, setError] = useState<string>("")
 
   const handleSubmit = (e) => {
     e.preventDefault()
