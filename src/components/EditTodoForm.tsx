@@ -38,7 +38,7 @@ export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) 
           onChange={(e) => setValue(e.target.value)}
           />
           </div>
-        <button onClick={handleSubmit} className='edit'>save</button>
+        <button type="submit" className='edit'>save</button>
         <button onClick={cancelEdit} className='edit'>cancel</button>
         
       </form>

@@ -13,6 +13,7 @@ interface Todo {
 	title: string;
 	created: string; // ISO date string 
 	isDone: boolean; 
+    edit?: boolean; 
 }
 
 interface TodoInfo { 
@@ -155,7 +156,7 @@ export const TodoWrapper: React.FC = () => {
             try{
                 const response = await fetch('https://easydev.club/api/v2/todos')
                 const data: MetaResponse<Todo, TodoInfo> = await response.json()
-                setTodos(data.data)
+                setTodos(data.data || [])
                 if (data.info) {
                     setTodoInfo(data.info)
                   }
