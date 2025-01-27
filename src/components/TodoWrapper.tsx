@@ -9,10 +9,10 @@ interface TodoRequest {
  } 
 
 interface Todo { 
-	id?: number;
-	title?: string;
-	created?: string; // ISO date string 
-	isDone?: boolean; 
+	id: number;
+	title: string;
+	created: string; // ISO date string 
+	isDone: boolean; 
 }
 
 interface TodoInfo { 
@@ -50,7 +50,7 @@ export const TodoWrapper: React.FC = () => {
 
             const result: Todo = await response.json()
             setTodos([...todos, result])
-            console.log(result);
+            console.log(result)
             
         }catch(error){
             console.error('Возникла ошибка при добавлении todo:', error)
@@ -66,7 +66,7 @@ export const TodoWrapper: React.FC = () => {
             if(response.ok){
                 setTodos(todos.filter(todo => todo.id !== id))
             }else{
-                console.error(`Ошибка при удалении задачи ${id}`);
+                console.error(`Ошибка при удалении задачи ${id}`)
             }  
         }catch(error){
             console.error('Не удалось удалить todo:', error)
@@ -100,6 +100,10 @@ export const TodoWrapper: React.FC = () => {
     const editTodo = async (id: number) => {
         try{
             const todoToEdit = todos.find((todo) => todo.id === id)
+            if (!todoToEdit) {
+                console.error(`Задача ${id} не найдена`)
+                return
+            }
             setEditingTodo({ ...todoToEdit } )
             setTodos(todos.map((todo) => todo.id === id ? {...todo, edit: true} : todo))
         }catch(error){
@@ -111,6 +115,10 @@ export const TodoWrapper: React.FC = () => {
     const toggleComplete = async (id: number) => {
         try{
             const todoIdSame = todos.find((todo) => todo.id === id)
+            if (!todoIdSame) {
+                console.error(`Задача ${id} не найдена`)
+                return;
+              }
             const response = await fetch(`https://easydev.club/api/v2/todos/${id}`, {
                 method: 'PUT',
                 body: JSON.stringify({
@@ -134,8 +142,12 @@ export const TodoWrapper: React.FC = () => {
     }
 
     const cancelEdit = (id: number) => {
-        setTodos(todos.map((todo) => todo.id === id ? { ...editingTodo, edit: false } : todo)); 
-        setEditingTodo(null);
+        if (!editingTodo) {
+            console.error('Нет редактируемой задачи')
+            return;
+        }
+        setTodos(todos.map((todo) => todo.id === id ? { ...editingTodo, edit: false } : todo))
+        setEditingTodo(null)
     };
     
     useEffect(() => {
@@ -145,10 +157,10 @@ export const TodoWrapper: React.FC = () => {
                 const data: MetaResponse<Todo, TodoInfo> = await response.json()
                 setTodos(data.data)
                 if (data.info) {
-                    setTodoInfo(data.info);
+                    setTodoInfo(data.info)
                   }
             }catch(error){
-                console.error('Ошибка при загрузке данных:', error);
+                console.error('Ошибка при загрузке данных:', error)
             }
           }
 

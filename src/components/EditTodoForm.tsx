@@ -10,14 +10,14 @@ interface Todo {
 interface TodoProps {
   task: Todo;
   cancelEdit: () => void;
-  editTodo: (id: number, title: string) => void;
+  editTodo: (title: string, id: number) => void;
 }
 
 export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) => {
   const [value, setValue] = useState<string>(task.title)
   const [error, setError] = useState<string>("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (value.length === 0) {
       setError('поле не может быть пустым')

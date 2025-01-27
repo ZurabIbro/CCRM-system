@@ -14,9 +14,9 @@ interface TodoFormProps {
 export const TodoForm: React.FC<TodoFormProps> = ({addTodo}) => {
   const [value, setValue] = useState<string>("")
   const [error, setError] = useState<string>("")
-  const [todos, setTodos] = useState<Todo[]>([])
+  const [, setTodos] = useState<Todo[]>([])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (value.length === 0) {
       setError('поле не может быть пустым')
