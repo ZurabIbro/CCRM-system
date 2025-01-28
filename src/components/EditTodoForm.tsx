@@ -19,10 +19,12 @@ export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) 
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (value.length === 0) {
+    if(value.length === 0) {
       setError('поле не может быть пустым')
-    }else if (value.length < 2){
+    }else if(value.length < 2) {
       setError('поле не может содержать меньше 2 символов')
+    }else if(value.length > 64){
+      setError('поле не может содержать больше 64 символов')
     }else {
       editTodo(value, task.id)
       setError('')
