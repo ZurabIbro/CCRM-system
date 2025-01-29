@@ -5,7 +5,7 @@ import { EditTodoForm } from './EditTodoForm'
 
 interface TodoRequest { 
 	title?: string;
- 	isDone?: boolean;  // изменение статуса задачи происходит через этот флаг
+ 	isDone: boolean;  // изменение статуса задачи происходит через этот флаг
  } 
 
 interface Todo { 
@@ -17,9 +17,9 @@ interface Todo {
 }
 
 interface TodoInfo { 
-	all?: number
-	completed?: number
-	inWork?: number
+	all: number
+	completed: number
+	inWork: number
 }
 
 interface MetaResponse<T, N> {
@@ -32,16 +32,42 @@ interface MetaResponse<T, N> {
 
 export const TodoWrapper: React.FC = () => {
     const [todos, setTodos] = useState<Todo[]>([])
-    const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
+    const [, setEditingTodo] = useState<Todo | null>(null)
     const [filter, setFilter] = useState<'all' | 'completed' | 'inWork'>('all')
-    const [todoInfo, setTodoInfo] = useState<TodoInfo | null>(null)
+    const [todoInfo, setTodoInfo] = useState<TodoInfo>({all: 0, completed: 0, inWork: 0})
+
+    const updateTodoInfo = (todos: Todo[]) => {
+        setTodoInfo({
+          all: todos.length,
+          completed: todos.filter((t) => t.isDone).length,
+          inWork: todos.filter((t) => !t.isDone).length,
+        })
+      }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                const response = await fetch('https://easydev.club/api/v2/todos')
+                const data: MetaResponse<Todo, TodoInfo> = await response.json()
+                setTodos(data.data || [])
+                if (data.info) {
+                    setTodoInfo(data.info)
+                    updateTodoInfo(data.data || [])
+                  }
+            }catch(error){
+                console.error('Ошибка при загрузке данных:', error)
+            }
+          }
+
+        fetchData()
+    }, [])
     
-    const addTodo = async (todo: string) => {
+    const addTodo = async (title: string) => {
         try{
              const response = await fetch('https://easydev.club/api/v2/todos', {
                 method: 'POST',
                 body: JSON.stringify({
-                    title: todo,
+                    title,
                     isDone: false
                 } as TodoRequest),
                 headers: {
@@ -50,7 +76,8 @@ export const TodoWrapper: React.FC = () => {
             })
 
             const result: Todo = await response.json()
-            setTodos([...todos, result])
+            setTodos([...todos, {...result, isDone: false}])
+            updateTodoInfo([...todos, {...result, isDone: false}])
             console.log(result)
             
         }catch(error){
@@ -66,6 +93,7 @@ export const TodoWrapper: React.FC = () => {
             })
             if(response.ok){
                 setTodos(todos.filter(todo => todo.id !== id))
+                updateTodoInfo(todos.filter(todo => todo.id !== id))
             }else{
                 console.error(`Ошибка при удалении задачи ${id}`)
             }  
@@ -133,6 +161,7 @@ export const TodoWrapper: React.FC = () => {
 
             if(response.ok) {
                 setTodos(todos.map((todo) => todo.id === id ? {...todo, isDone: !todo.isDone} : todo))
+                updateTodoInfo(todos.map((todo) => todo.id === id ? {...todo, isDone: !todo.isDone} : todo))
             }else{
                 console.error(`Ошибка при изменении статуса задачи ${id}`)
             }
@@ -143,44 +172,26 @@ export const TodoWrapper: React.FC = () => {
     }
 
     const cancelEdit = (id: number) => {
-        if (!editingTodo) {
-            console.error('Нет редактируемой задачи')
-            return;
-        }
-        setTodos(todos.map((todo) => todo.id === id ? { ...editingTodo, edit: false } : todo))
+        setTodos(todos.map((todo) =>
+            todo.id === id ? { ...todo, edit: false } : todo
+        ))
         setEditingTodo(null)
     };
-    
-    useEffect(() => {
-        const fetchData = async () => {
-            try{
-                const response = await fetch('https://easydev.club/api/v2/todos')
-                const data: MetaResponse<Todo, TodoInfo> = await response.json()
-                setTodos(data.data || [])
-                if (data.info) {
-                    setTodoInfo(data.info)
-                  }
-            }catch(error){
-                console.error('Ошибка при загрузке данных:', error)
-            }
-          }
-
-        fetchData()
-    }, [])
 
     const filteredTodos = todos.filter((todo) => {
         if (filter === 'all') return true
         if (filter === 'completed') return todo.isDone
         if (filter === 'inWork') return !todo.isDone
+        return false
     })
     
   return (
     <div>
         <TodoForm addTodo={addTodo}/>
         <div className='filteredTodos'> 
-            <button onClick={() => setFilter('all')}>Все({todoInfo?.all})</button>
-            <button onClick={() => setFilter('inWork')}>В работе({todoInfo?.inWork})</button>
-            <button onClick={() => setFilter('completed')}>Сделано({todoInfo?.completed})</button>
+            <button onClick={() => setFilter('all')}>Все({todoInfo.all})</button>
+            <button onClick={() => setFilter('inWork')}>В работе({todoInfo.inWork})</button>
+            <button onClick={() => setFilter('completed')}>Сделано({todoInfo.completed})</button>
         </div>
 
         {filteredTodos.map((todo) => (
