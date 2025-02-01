@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Todo { 
   id: number;
@@ -17,6 +17,10 @@ export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) 
   const [value, setValue] = useState<string>(task.title)
   const [error, setError] = useState<string>("")
 
+  useEffect(() => {
+    setValue(task.title)
+  }, [task.title])
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if(value.length === 0) {
@@ -30,6 +34,12 @@ export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) 
       setError('')
     }
   } 
+
+  const handleCancel = () => {
+    setValue(task.title)
+    cancelEdit()
+  }
+
   return (
     <div>
       <form className='Todo' onSubmit={handleSubmit}>
@@ -41,7 +51,7 @@ export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) 
           />
           </div>
         <button type="submit" className='edit'>save</button>
-        <button onClick={cancelEdit} className='edit'>cancel</button>
+        <button onClick={handleCancel} className='edit'>cancel</button>
         
       </form>
       <span className='error'>{error}</span>
