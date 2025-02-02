@@ -1,7 +1,4 @@
-export interface TodoRequest { 
-	title?: string
- 	isDone: boolean
- } 
+
 
 export interface Todo { 
 	id: number

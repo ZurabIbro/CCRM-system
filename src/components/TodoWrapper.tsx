@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TodoForm } from './TodoForm'
 import { Todo } from './Todo'
 import { EditTodoForm } from './EditTodoForm'
-import { Todo as TodoTs, TodoInfo, MetaResponse } from "../types/todoTypes"
+import { Todo as TodoTs, TodoInfo, MetaResponse } from "../types/Types"
 import { getTodos, addTodo, deleteTodo, updateTodo, updateToggleTodo } from '../api/api'
 
 
@@ -62,7 +62,7 @@ export const TodoWrapper: React.FC = () => {
         if (!todoToEdit) return;
     
         setEditingTodo(todoToEdit)
-      };
+      }
 
     const toggleComplete = async (id: number) => {
         try{
