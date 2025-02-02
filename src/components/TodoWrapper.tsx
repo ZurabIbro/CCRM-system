@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TodoForm } from './TodoForm'
 import { Todo } from './Todo'
 import { EditTodoForm } from './EditTodoForm'
-import { Todo as TodoTs, TodoInfo, MetaResponse } from "../types/Types"
+import { Todo as TodoTs, TodoInfo, MetaResponse } from "../types/todoTypes"
 import { getTodos, addTodo, deleteTodo, updateTodo, updateToggleTodo } from '../api/api'
 
 
