@@ -1,4 +1,3 @@
-
 const API = 'https://easydev.club/api/v2/todos'
 
 export const getTodos = async () => {

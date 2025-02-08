@@ -58,8 +58,8 @@ export const TodoWrapper: React.FC = () => {
     }
 
     const editTodo = (id: number) => {
-        const todoToEdit = todos.find((t) => t.id === id)
-        if (!todoToEdit) return;
+        const todoToEdit = todos.find((todo) => todo.id === id)
+        if (!todoToEdit) return
     
         setEditingTodo(todoToEdit)
       }
@@ -69,7 +69,7 @@ export const TodoWrapper: React.FC = () => {
             const todoIdSame = todos.find((todo) => todo.id === id)
             if (!todoIdSame) {
                 console.error(`Задача ${id} не найдена`)
-                return;
+                return
               }
             setTodos(todos.map((todo) =>
                 todo.id === id ? { ...todo, isDone: !todo.isDone } : todo

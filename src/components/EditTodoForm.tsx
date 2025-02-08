@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { editTodoProps } from "../types/Types";
 
-interface Todo { 
-  id: number;
-  title: string;
-  created: string; // ISO date string 
-  isDone: boolean; 
-}
-
-interface TodoProps {
-  task: Todo;
-  cancelEdit: () => void;
-  editTodo: (title: string, id: number) => void;
-}
-
-export const EditTodoForm: React.FC<TodoProps> = ({editTodo, task, cancelEdit}) => {
+export const EditTodoForm: React.FC<editTodoProps> = ({editTodo, task, cancelEdit}) => {
   const [value, setValue] = useState<string>(task.title)
   const [error, setError] = useState<string>("")
 
