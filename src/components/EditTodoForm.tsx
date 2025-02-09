@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { editTodoProps } from "../types/Types";
+import React, { useEffect, useState } from "react"
+import { Todo } from "../types/todos"
+import { updateTodo } from "../api/api"
 
-export const EditTodoForm: React.FC<editTodoProps> = ({editTodo, task, cancelEdit}) => {
+export interface editTodoProps {
+	task: Todo;
+	cancelEdit: () => void
+  fetchData: () => void
+  setEditingTodo: (todo: Todo | null) => void
+}
+
+export const EditTodoForm: React.FC<editTodoProps> = ({fetchData, task, cancelEdit, setEditingTodo}) => {
   const [value, setValue] = useState<string>(task.title)
   const [error, setError] = useState<string>("")
 
@@ -9,7 +17,7 @@ export const EditTodoForm: React.FC<editTodoProps> = ({editTodo, task, cancelEdi
     setValue(task.title)
   }, [task.title])
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if(value.length === 0) {
       setError('поле не может быть пустым')
@@ -18,10 +26,15 @@ export const EditTodoForm: React.FC<editTodoProps> = ({editTodo, task, cancelEdi
     }else if(value.length > 64){
       setError('поле не может содержать больше 64 символов')
     }else {
-      editTodo(value, task.id)
-      setError('')
+
+    try{
+      await updateTodo(value, task.id)
+      setEditingTodo(null)
+      fetchData()
+    }catch(error){
+      console.error('Ошибка при изменении задачи', error)
     }
-  } 
+  }} 
 
   const handleCancel = () => {
     setValue(task.title)

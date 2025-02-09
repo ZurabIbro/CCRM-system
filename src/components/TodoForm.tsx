@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
-import { TodoFormProps } from '../types/Types'
+import { addTodo } from '../api/api'
 
-export const TodoForm: React.FC<TodoFormProps> = ({addTodo}) => {
+
+export interface TodoFormProps {
+  fetchData: () => void 
+}
+
+export const TodoForm: React.FC<TodoFormProps> = ({fetchData}) => {
   const [value, setValue] = useState<string>("")
   const [error, setError] = useState<string>("")
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if(value.length === 0) {
       setError('поле не может быть пустым')
@@ -15,8 +20,15 @@ export const TodoForm: React.FC<TodoFormProps> = ({addTodo}) => {
       setError('поле не может содержать больше 64 символов')
     }else {
       setError('')
-      addTodo(value)
-      setValue("")
+
+      try{
+        await addTodo(value)
+        setValue("")
+        fetchData()
+        }catch(error){
+        console.error('Возникла ошибка при добавлении todo:', error)
+      }
+
     }
   }
 

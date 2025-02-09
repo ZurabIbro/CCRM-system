@@ -1,8 +1,8 @@
 const API = 'https://easydev.club/api/v2/todos'
 
-export const getTodos = async () => {
+export const getTodos = async (filter: 'all' | 'completed' | 'inWork' = 'all') => {
     try{
-        const response = await fetch(API)
+        const response = await fetch(`${API}?filter=${filter}`)
         if (!response.ok) throw new Error('Не удалось загрузить данные')
         return await response.json()
     }catch(error){
