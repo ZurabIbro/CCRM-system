@@ -44,6 +44,7 @@ export const TodoWrapper: React.FC = () => {
         <TodoForm fetchData={fetchData}/>
         <TodoFilter setFilter={setFilter} todoInfo={todoInfo}/>
         <TodoList 
+        filter={filter}
         todos={todos}
         editingTodo={editingTodo}
         setEditingTodo={setEditingTodo}

@@ -8,12 +8,13 @@ interface TodoListProps {
   editingTodo: Todo | null
   cancelEdit: () => void
   editTodo: (id: number) => void
-  fetchData: () => void
+  fetchData: (filter?: 'all' | 'completed' | 'inWork') => Promise<void>
   setEditingTodo: (todo: Todo | null) => void
+  filter: 'all' | 'completed' | 'inWork'
 }
 
 
-export const TodoList : React.FC<TodoListProps>= ({todos, editingTodo, cancelEdit, editTodo, fetchData, setEditingTodo}) => {
+export const TodoList : React.FC<TodoListProps>= ({todos, editingTodo, cancelEdit, editTodo, fetchData, setEditingTodo, filter}) => {
   return (
     <div>
         {todos.map((todo) => (
@@ -21,6 +22,7 @@ export const TodoList : React.FC<TodoListProps>= ({todos, editingTodo, cancelEdi
                 <EditTodoForm key={todo.id} task={editingTodo} cancelEdit={cancelEdit} fetchData={fetchData} setEditingTodo={setEditingTodo}/>
             ) : (
                 <TodoItem 
+                filter={filter}
                 task={todo} 
                 key={todo.id} 
                 fetchData={fetchData}
