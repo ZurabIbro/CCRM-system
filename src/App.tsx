@@ -1,5 +1,5 @@
 import './App.scss';
-import {TodoWrapper} from './components/TodoWrapper'
+import {TodoWrapper} from './pages/TodoPage'
 
 function App() {
   return (
