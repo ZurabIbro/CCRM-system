@@ -23,8 +23,8 @@ export const TodoForm: React.FC<TodoFormProps> = ({fetchData}) => {
 
       try{
         await addTodo(value)
+        await fetchData()
         setValue("")
-        fetchData()
         }catch(error){
         console.error('Возникла ошибка при добавлении todo:', error)
       }
