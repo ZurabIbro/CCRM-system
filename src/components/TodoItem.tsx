@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { updateToggleTodo, deleteTodo } from '../api/api'
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Todo } from '../types/todos'
+import { DeleteOutlined, FormOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Form } from 'antd'
 
 
 export interface TodoItemProps {
@@ -35,15 +34,18 @@ export const TodoItem: React.FC<TodoItemProps> = ({task, fetchData, editTodo, fi
   const setClassOnIsDone = (isDone: boolean) => `${isDone ? 'completed' : ''}`
 
   return (
+    <Form.Item>
     <div className='Todo'>
       <div className='inpt'>
-        <input type='checkbox' checked={task.isDone} className={setClassOnIsDone(task.isDone)} onChange={handleToggleComplete}/>
-        <p className={setClassOnIsDone(task.isDone)}>{task.title}</p>
+        <Checkbox checked={task.isDone} onChange={handleToggleComplete}/>
+        <p style={{marginLeft: 10}} className={setClassOnIsDone(task.isDone)}>{task.title}</p>
       </div>
       <div>
-        <FontAwesomeIcon icon={faPenToSquare} className='edit' onClick={() => editTodo(task.id)}/>
-        <FontAwesomeIcon icon={faTrash} className='trash' onClick={handleDeleteTodo}/>
+        
+        <Button icon={<FormOutlined />} className='edit' onClick={() => editTodo(task.id)}/>
+        <Button icon={<DeleteOutlined />} className='trash' onClick={handleDeleteTodo}/>
       </div>
     </div>
+    </Form.Item>
   )
 }
