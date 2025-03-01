@@ -14,6 +14,7 @@ export const TodoWrapper: React.FC = () => {
     const [filter, setFilter] = useState<'all' | 'completed' | 'inWork'>('all')
     const [todoInfo, setTodoInfo] = useState<TodoInfo>(defaultInfo)
     
+    
     const fetchData = useCallback(async (filter: 'all' | 'completed' | 'inWork' = 'all') => {
         try{
             const data: MetaResponse<TodoTs, TodoInfo> = await getTodos(filter)
@@ -40,18 +41,18 @@ export const TodoWrapper: React.FC = () => {
     }
     
   return (
-    <div>
+    
+    <>
         <TodoForm fetchData={fetchData}/>
         <TodoFilter setFilter={setFilter} todoInfo={todoInfo}/>
         <TodoList 
         filter={filter}
         todos={todos}
         editingTodo={editingTodo}
-        setEditingTodo={setEditingTodo}
         fetchData={fetchData}
         cancelEdit={cancelEdit}
         editTodo={editTodo}
         />
-    </div>
+    </>
   )
 }

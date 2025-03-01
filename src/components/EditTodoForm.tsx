@@ -1,61 +1,52 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Todo } from "../types/todos"
 import { updateTodo } from "../api/api"
+import { Button, Form, Input } from "antd";
 
 export interface editTodoProps {
-	task: Todo;
 	cancelEdit: () => void
   fetchData: () => void
-  setEditingTodo: (todo: Todo | null) => void
+  editingTodo: Todo
 }
 
-export const EditTodoForm: React.FC<editTodoProps> = ({fetchData, task, cancelEdit, setEditingTodo}) => {
-  const [value, setValue] = useState<string>(task.title)
-  const [error, setError] = useState<string>("")
+export const EditTodoForm: React.FC<editTodoProps> = ({fetchData, cancelEdit, editingTodo}) => {
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    setValue(task.title)
-  }, [task.title])
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if(value.length === 0) {
-      setError('поле не может быть пустым')
-    }else if(value.length < 2) {
-      setError('поле не может содержать меньше 2 символов')
-    }else if(value.length > 64){
-      setError('поле не может содержать больше 64 символов')
-    }else {
-
+  const handleSubmit = async (values: {title: string}) => {
+    setLoading(true)
     try{
-      await updateTodo(value, task.id)
-      setEditingTodo(null)
-      fetchData()
+
+      await updateTodo(values.title, editingTodo.id)
+      await fetchData()
+      cancelEdit()
     }catch(error){
       console.error('Ошибка при изменении задачи', error)
+    }finally{
+      setLoading(false)
     }
-  }} 
-
-  const handleCancel = () => {
-    setValue(task.title)
-    cancelEdit()
   }
 
   return (
-    <div>
-      <form className='Todo' onSubmit={handleSubmit}>
-        <div className='inpt'>
-          <input type='text'  
-          placeholder='Update'
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+      <Form className='Todo' onFinish={handleSubmit} initialValues={{title: editingTodo.title}}>
+        <Form.Item
+          name="title"
+          rules={[
+            {required: true, message: 'поле не может быть пустым'},
+            {min: 2, message: 'поле не может содержать меньше 2 символов'},
+            {max: 64, message: 'поле не может содержать больше 64 символов'}
+          ]}
+          >
+          <Input  
+            className='inptEdit'
+            placeholder='Update'
           />
-          </div>
-        <button type="submit" className='edit'>save</button>
-        <button onClick={handleCancel} className='edit'>cancel</button>
+        </Form.Item>
+
+        <Form.Item>
+          <Button  htmlType="submit" className='edit' loading={loading}>save</Button>
+          <Button onClick={cancelEdit} className='edit'>cancel</Button>
+        </Form.Item>
         
-      </form>
-      <span className='error'>{error}</span>
-    </div>
+      </Form>
   )
 }

@@ -1,49 +1,41 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { addTodo } from '../api/api'
-
+import { Button, Form, Input } from 'antd'
 
 export interface TodoFormProps {
   fetchData: () => void 
 }
 
 export const TodoForm: React.FC<TodoFormProps> = ({fetchData}) => {
-  const [value, setValue] = useState<string>("")
-  const [error, setError] = useState<string>("")
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if(value.length === 0) {
-      setError('поле не может быть пустым')
-    }else if(value.length < 2) {
-      setError('поле не может содержать меньше 2 символов')
-    }else if(value.length > 64){
-      setError('поле не может содержать больше 64 символов')
-    }else {
-      setError('')
+  const [form] = Form.useForm();
 
+  const handleSubmit = async (values: {title: string}) => {
       try{
-        await addTodo(value)
+        await addTodo(values.title)
         await fetchData()
-        setValue("")
+        form.resetFields()
         }catch(error){
         console.error('Возникла ошибка при добавлении todo:', error)
       }
-
     }
-  }
-
+  
   return (
-    <form className='ToDoForm' onSubmit={handleSubmit}>
-      <input type='text' 
-        className='todo-input' 
-        placeholder='Task To Be Done...'
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <button type='submit' className='todo-button'>Add</button>
-      <div className='error'>
-        {error}
-      </div>
-    </form>
+    <Form form={form} className='ToDoForm' onFinish={handleSubmit}>
+      <Form.Item
+      name='title'
+      rules={[
+        {required: true, message: 'поле не может быть пустым'},
+        {min: 2, message: 'поле не может содержать меньше 2 символов'},
+        {max: 64, message: 'поле не может содержать больше 64 символов'}
+      ]}>
+        <Input
+          className='todo-input' 
+          placeholder='Task To Be Done...'
+          variant='underlined'
+        />
+      </Form.Item>
+      <Button type='primary' className='todo-button' htmlType='submit'>Add</Button>
+    </Form>
   )
 }
